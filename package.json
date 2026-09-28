@@ -1,0 +1,26 @@
+{
+  "name": "agent-surface",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Protocol-agnostic Generative UI host + agent observability & eval gate",
+  "packageManager": "pnpm@10.15.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "check": "pnpm typecheck && pnpm test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "gate": "node packages/agentgate/bin/agentgate.mjs"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^2.5.0",
+    "turbo": "^2.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
