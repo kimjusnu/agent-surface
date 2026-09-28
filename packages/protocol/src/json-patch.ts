@@ -8,7 +8,6 @@
 
 import type { DataModel, JsonPointer, JsonValue } from './ir.js';
 import { getAtPointer, parsePointer, setAtPointer } from './headless.js';
-
 export type PatchOp =
   | { op: 'add' | 'replace' | 'remove'; path: JsonPointer; value?: JsonValue }
   | { op: 'move' | 'copy'; from: JsonPointer; path: JsonPointer }
@@ -106,20 +105,83 @@ export function applyPatch(target: DataModel, ops: readonly PatchOp[]): PatchRes
   return { ok: true, applied };
 }
 
-/** Inverse of a patch, used to roll back a failed optimistic write. */
-export function invertPatch(ops: readonly PatchOp[]): PatchOp[] {
-  return [...ops].reverse().map((op) => {
+/**
+ * Inverse of a patch, used to roll back a failed optimistic write.
+ *
+ * `before` is required because the inverse of a value-carrying op is
+ * value-carrying: inverting `remove` needs the value that was there, which
+ * only the document knows. Pass the document as it was *before* `ops`
+ * applied.
+ *
+ * `add` inverts to `remove` only when the path was absent beforehand; when it
+ * overwrote an existing member, the correct inverse is `replace` with the old
+ * value. Getting this wrong turns a rollback into data loss, so it is derived
+ * from the document rather than assumed.
+ *
+ * `move`/`copy` and `test` have no lossless inverse here: `copy` is not
+ * reversible, and `test` did not mutate. Both are reported in
+ * `unsupported` so a caller can decide to reject or to re-sync.
+ */
+export function invertPatch(
+  before: DataModel,
+  ops: readonly PatchOp[],
+): { inverse: PatchOp[]; unsupported: number[] } {
+  // Walk a simulated document so each op's inverse sees the state it produced.
+  let doc = structuredClone(before) as DataModel;
+  const inverse: PatchOp[] = [];
+  const unsupported: number[] = [];
+
+  for (let i = ops.length - 1; i >= 0; i--) {
+    const op = ops[i]!;
     switch (op.op) {
-      case 'add':
-        return { op: 'remove', path: op.path };
-      case 'remove':
-        return { op: 'add', path: op.path, value: structuredClone(op.value) };
-      case 'replace':
-        return { op: 'replace', path: op.path, value: structuredClone(op.value) };
-      default:
-        return op;
+      case 'remove': {
+        // `doc` is the pre-patch state here, so this read is correct.
+        const prior = getAtPointer(doc, op.path);
+        if (prior === undefined) {
+          // Nothing was there to remove; a no-op remove needs no inverse.
+          continue;
+        }
+        inverse.push({ op: 'add', path: op.path, value: structuredClone(prior) as JsonValue });
+        break;
+      }
+      case 'add': {
+        const prior = getAtPointer(doc, op.path);
+        if (prior === undefined) {
+          inverse.push({ op: 'remove', path: op.path });
+        } else {
+          inverse.push({ op: 'replace', path: op.path, value: structuredClone(prior) as JsonValue });
+        }
+        doc = setAtPointer(doc, op.path, structuredClone(op.value));
+        break;
+      }
+      case 'replace': {
+        const prior = getAtPointer(doc, op.path);
+        if (prior === undefined) {
+          // Replaced a path that did not exist; replaying `replace` would fail.
+          inverse.push({ op: 'remove', path: op.path });
+        } else {
+          inverse.push({ op: 'replace', path: op.path, value: structuredClone(prior) as JsonValue });
+        }
+        doc = setAtPointer(doc, op.path, structuredClone(op.value));
+        break;
+      }
+      case 'test': {
+        // A test either passes (no mutation, no inverse needed) or aborts the
+        // whole patch before anything after it.
+        if (!deepEqual(getAtPointer(doc, op.path), op.value)) break;
+        break;
+      }
+      default: {
+        unsupported.push(i);
+        if (op.op === 'move') {
+          const value = getAtPointer(doc, op.from);
+          removeAtPointer(doc, op.from);
+          if (value !== undefined) doc = setAtPointer(doc, op.path, structuredClone(value));
+        }
+      }
     }
-  });
+  }
+  return { inverse, unsupported };
 }
 
 function lastToken(pointer: JsonPointer): string {

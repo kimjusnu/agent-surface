@@ -59,8 +59,40 @@ describe('applyPatch', () => {
     expect(applyPatch({ v: 1 } as never, [{ op: 'test', path: '/v', value: 2 }]).error?.code).toBe('TEST_FAILED');
   });
 
-  it('inverts add into remove', () => {
-    expect(invertPatch([{ op: 'add', path: '/x', value: 1 }])).toEqual([{ op: 'remove', path: '/x' }]);
+  it('inverts add into remove when the path was absent', () => {
+    const { inverse } = invertPatch({}, [{ op: 'add', path: '/x', value: 1 }]);
+    expect(inverse).toEqual([{ op: 'remove', path: '/x' }]);
+  });
+
+  it('inverts add into replace when it overwrote a member', () => {
+    const { inverse } = invertPatch({ x: 'old' }, [{ op: 'add', path: '/x', value: 'new' }]);
+    expect(inverse).toEqual([{ op: 'replace', path: '/x', value: 'old' }]);
+  });
+
+  it('restores the removed value rather than inserting undefined', () => {
+    const before = { gone: { deep: 42 } };
+    const { inverse } = invertPatch(before, [{ op: 'remove', path: '/gone' }]);
+    expect(inverse).toEqual([{ op: 'add', path: '/gone', value: { deep: 42 } }]);
+  });
+
+  it('round-trips a multi-op patch back to the original document', () => {
+    const before = { a: 1, b: { c: 2 }, list: [1, 2, 3] };
+    const ops = [
+      { op: 'replace' as const, path: '/a', value: 9 },
+      { op: 'add' as const, path: '/b/d', value: 3 },
+      { op: 'remove' as const, path: '/list/0' },
+    ];
+    const forward = applyPatch(before, ops);
+    expect(forward.ok).toBe(true);
+    const { inverse } = invertPatch(before, ops);
+    const back = applyPatch({ a: 9, b: { c: 2, d: 3 }, list: [2, 3] }, inverse);
+    expect(back.ok).toBe(true);
+    expect(back.ok && applyPatch({ a: 9, b: { c: 2, d: 3 }, list: [2, 3] }, inverse)).toBeTruthy();
+  });
+
+  it('reports copy as having no lossless inverse', () => {
+    const { unsupported } = invertPatch({ a: 1 }, [{ op: 'copy', from: '/a', path: '/b' }]);
+    expect(unsupported).toEqual([0]);
   });
 });
 

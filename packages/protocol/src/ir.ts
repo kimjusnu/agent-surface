@@ -319,8 +319,18 @@ export interface StatePatch {
   revision: number;
 }
 
+/**
+ * RFC 6902 operations.
+ *
+ * `value` is required for the ops that carry data (`add`, `replace`, `test`)
+ * and forbidden for `remove`, which deletes a path. Making it a union rather
+ * than one optional field means a bare `{op:'add', path}` -- a no-op that
+ * would silently drop the user's interaction -- is a type error at the
+ * adapter, not a runtime surprise.
+ */
 export type JsonPatchOperation =
-  | { op: 'add' | 'replace' | 'remove'; path: JsonPointer }
+  | { op: 'add' | 'replace'; path: JsonPointer; value: JsonValue }
+  | { op: 'remove'; path: JsonPointer }
   | { op: 'move' | 'copy'; from: JsonPointer; path: JsonPointer }
   | { op: 'test'; path: JsonPointer; value: JsonValue };
 
