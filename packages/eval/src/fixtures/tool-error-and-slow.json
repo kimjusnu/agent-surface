@@ -1,0 +1,392 @@
+{
+  "runId": "run_refund_002",
+  "threadId": "thread_refund_7",
+  "protocol": "ag-ui",
+  "scenario": "refund-flow",
+  "frames": [
+    {
+      "seq": 0,
+      "kind": "run.started",
+      "source": "ag-ui",
+      "ts": 1767225600000,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 0,
+      "payload": {
+        "agentName": "support-surface",
+        "input": {
+          "ticketId": "TK-9",
+          "intent": "refund"
+        }
+      }
+    },
+    {
+      "seq": 1,
+      "kind": "text.delta",
+      "source": "ag-ui",
+      "ts": 1767225600220,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "delta": "환불 요청을 확인하고 있습니다."
+      }
+    },
+    {
+      "seq": 2,
+      "kind": "text.done",
+      "source": "ag-ui",
+      "ts": 1767225600300,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "text": "환불 요청을 확인하고 있습니다."
+      }
+    },
+    {
+      "seq": 3,
+      "kind": "warning",
+      "source": "ag-ui",
+      "ts": 1767225600340,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 0,
+      "payload": {
+        "code": "CATALOG_PARTIAL",
+        "message": "3개 상품의 카탈로그 메타데이터를 불러오지 못했습니다",
+        "detail": {
+          "skipped": 3,
+          "endpoint": "catalog.internal"
+        }
+      }
+    },
+    {
+      "seq": 4,
+      "kind": "tool.started",
+      "source": "ag-ui",
+      "ts": 1767225600400,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "toolName": "fetch_order"
+      }
+    },
+    {
+      "seq": 5,
+      "kind": "tool.args.done",
+      "source": "ag-ui",
+      "ts": 1767225600420,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "args": {
+          "orderId": "ord_4417"
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "kind": "tool.result",
+      "source": "ag-ui",
+      "ts": 1767225600540,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "messageId": "tm1",
+        "content": "upstream 503 from order-service",
+        "isError": true,
+        "durationMs": 120
+      }
+    },
+    {
+      "seq": 7,
+      "kind": "tool.started",
+      "source": "ag-ui",
+      "ts": 1767225600700,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 2,
+      "payload": {
+        "toolCallId": "call_2",
+        "toolName": "fetch_order"
+      }
+    },
+    {
+      "seq": 8,
+      "kind": "tool.args.done",
+      "source": "ag-ui",
+      "ts": 1767225600720,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 2,
+      "payload": {
+        "toolCallId": "call_2",
+        "args": {
+          "orderId": "ord_4417"
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "kind": "tool.result",
+      "source": "ag-ui",
+      "ts": 1767225600830,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 2,
+      "payload": {
+        "toolCallId": "call_2",
+        "messageId": "tm2",
+        "content": "upstream 503 from order-service",
+        "isError": true,
+        "durationMs": 110
+      }
+    },
+    {
+      "seq": 10,
+      "kind": "tool.started",
+      "source": "ag-ui",
+      "ts": 1767225601000,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_3",
+        "toolName": "fetch_order"
+      }
+    },
+    {
+      "seq": 11,
+      "kind": "tool.args.done",
+      "source": "ag-ui",
+      "ts": 1767225601020,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_3",
+        "args": {
+          "orderId": "ord_4417"
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "kind": "tool.result",
+      "source": "ag-ui",
+      "ts": 1767225601130,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_3",
+        "messageId": "tm3",
+        "content": "upstream 503 from order-service",
+        "isError": true,
+        "durationMs": 110
+      }
+    },
+    {
+      "seq": 13,
+      "kind": "tool.started",
+      "source": "ag-ui",
+      "ts": 1767225601500,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 4,
+      "payload": {
+        "toolCallId": "call_4",
+        "toolName": "query_refund_policy"
+      }
+    },
+    {
+      "seq": 14,
+      "kind": "tool.args.delta",
+      "source": "ag-ui",
+      "ts": 1767225601520,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 4,
+      "payload": {
+        "toolCallId": "call_4",
+        "delta": "{\"reason\":"
+      }
+    },
+    {
+      "seq": 15,
+      "kind": "tool.args.delta",
+      "source": "ag-ui",
+      "ts": 1767225601560,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 4,
+      "payload": {
+        "toolCallId": "call_4",
+        "delta": "\"damaged\"}"
+      }
+    },
+    {
+      "seq": 16,
+      "kind": "tool.args.done",
+      "source": "ag-ui",
+      "ts": 1767225601580,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 4,
+      "payload": {
+        "toolCallId": "call_4",
+        "args": {
+          "reason": "damaged",
+          "region": "kr"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "kind": "tool.result",
+      "source": "ag-ui",
+      "ts": 1767225606780,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 4,
+      "payload": {
+        "toolCallId": "call_4",
+        "messageId": "tm4",
+        "content": "{\"eligible\":true,\"windowDays\":30,\"note\":\"requires photo\"}",
+        "durationMs": 5200
+      }
+    },
+    {
+      "seq": 18,
+      "kind": "surface.created",
+      "source": "ag-ui",
+      "ts": 1767225606900,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 5,
+      "payload": {
+        "surfaceId": "s_refund",
+        "catalogId": "support.v2",
+        "title": "환불 안내",
+        "data": {
+          "policy": {
+            "eligible": true,
+            "windowDays": 30
+          }
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "kind": "surface.nodes",
+      "source": "ag-ui",
+      "ts": 1767225607100,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 5,
+      "payload": {
+        "surfaceId": "s_refund",
+        "mode": "replace",
+        "nodes": [
+          {
+            "component": "Notice",
+            "id": "n_warn",
+            "props": {
+              "tone": {
+                "kind": "literal",
+                "value": "warning"
+              },
+              "body": {
+                "kind": "literal",
+                "value": "사진을 첨부해 주세요."
+              }
+            }
+          },
+          {
+            "component": "Button",
+            "id": "btn_upload",
+            "props": {
+              "label": {
+                "kind": "literal",
+                "value": "사진 첨부"
+              },
+              "action": {
+                "kind": "literal",
+                "value": "onClick"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "seq": 20,
+      "kind": "error",
+      "source": "ag-ui",
+      "ts": 1767225607300,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 5,
+      "payload": {
+        "code": "ORDER_LOOKUP_DEGRADED",
+        "fatal": false,
+        "message": "order-service was unreachable 3 times; fell back to the cached policy table",
+        "detail": {
+          "attempts": 3,
+          "fallback": "cached_policy_v3"
+        }
+      }
+    },
+    {
+      "seq": 21,
+      "kind": "text.delta",
+      "source": "ag-ui",
+      "ts": 1767225608100,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 6,
+      "payload": {
+        "messageId": "m2",
+        "delta": "환불이 가능합니다. 사진을 첨부해 주세요."
+      }
+    },
+    {
+      "seq": 22,
+      "kind": "text.done",
+      "source": "ag-ui",
+      "ts": 1767225608250,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 6,
+      "payload": {
+        "messageId": "m2",
+        "text": "환불이 가능합니다. 사진을 첨부해 주세요."
+      }
+    },
+    {
+      "seq": 23,
+      "kind": "run.finished",
+      "source": "ag-ui",
+      "ts": 1767225609000,
+      "threadId": "thread_refund_7",
+      "runId": "run_refund_002",
+      "step": 6,
+      "payload": {
+        "outcome": "success",
+        "usage": {
+          "inputTokens": 12000,
+          "outputTokens": 3000
+        }
+      }
+    }
+  ]
+}

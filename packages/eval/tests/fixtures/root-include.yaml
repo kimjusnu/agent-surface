@@ -1,0 +1,8 @@
+name: root-include
+include:
+  - base.yaml
+cases:
+  - id: root/gamma
+    subject: 'c-*'
+    assertions:
+      - type: no-errors

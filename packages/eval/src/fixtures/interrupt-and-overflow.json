@@ -1,0 +1,347 @@
+{
+  "runId": "run_escalation_003",
+  "threadId": "thread_ops_3",
+  "protocol": "mcp-apps",
+  "scenario": "escalation-flow",
+  "frames": [
+    {
+      "seq": 0,
+      "kind": "run.started",
+      "source": "mcp-apps",
+      "ts": 1767225600000,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 0,
+      "payload": {
+        "agentName": "ops-copilot",
+        "input": {
+          "queue": "billing",
+          "severity": "sev2"
+        }
+      }
+    },
+    {
+      "seq": 1,
+      "kind": "text.delta",
+      "source": "mcp-apps",
+      "ts": 1767225600300,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "delta": "결제 장애 건을 조사했습니다. "
+      }
+    },
+    {
+      "seq": 2,
+      "kind": "text.delta",
+      "source": "mcp-apps",
+      "ts": 1767225600500,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "delta": "원인은 PG 타임아웃으로 판단됩니다."
+      }
+    },
+    {
+      "seq": 3,
+      "kind": "text.done",
+      "source": "mcp-apps",
+      "ts": 1767225600600,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "text": "결제 장애 건을 조사했습니다. 원인은 PG 타임아웃으로 판단됩니다."
+      }
+    },
+    {
+      "seq": 4,
+      "kind": "tool.started",
+      "source": "mcp-apps",
+      "ts": 1767225600700,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "toolName": "query_metrics"
+      }
+    },
+    {
+      "seq": 5,
+      "kind": "tool.args.done",
+      "source": "mcp-apps",
+      "ts": 1767225600720,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "args": {
+          "service": "billing",
+          "window": "1h"
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "kind": "tool.result",
+      "source": "mcp-apps",
+      "ts": 1767225601500,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "messageId": "tm1",
+        "content": "{\"p99Ms\":8420,\"errorRate\":0.031}",
+        "durationMs": 780
+      }
+    },
+    {
+      "seq": 7,
+      "kind": "surface.created",
+      "source": "mcp-apps",
+      "ts": 1767225601600,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 2,
+      "payload": {
+        "surfaceId": "s_ops",
+        "catalogId": "ops.v1",
+        "title": "장애 대시보드",
+        "sendDataModel": true,
+        "data": {
+          "incident": {
+            "id": "INC-77",
+            "severity": "sev2",
+            "impactedTxns": 1840
+          }
+        }
+      }
+    },
+    {
+      "seq": 8,
+      "kind": "surface.nodes",
+      "source": "mcp-apps",
+      "ts": 1767225601900,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 2,
+      "payload": {
+        "surfaceId": "s_ops",
+        "mode": "replace",
+        "nodes": [
+          {
+            "component": "Stat",
+            "id": "s_p99",
+            "props": {
+              "label": {
+                "kind": "literal",
+                "value": "p99"
+              },
+              "value": {
+                "kind": "data",
+                "ref": {
+                  "pointer": "/incident/impactedTxns"
+                }
+              }
+            }
+          },
+          {
+            "component": "Timeline",
+            "id": "s_timeline",
+            "props": {
+              "events": {
+                "kind": "template",
+                "template": "{{ /incident/id }}"
+              }
+            }
+          },
+          {
+            "component": "Button",
+            "id": "btn_escalate",
+            "props": {
+              "label": {
+                "kind": "literal",
+                "value": "에스컬레이션"
+              },
+              "action": {
+                "kind": "literal",
+                "value": "onClick"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "seq": 9,
+      "kind": "app.attached",
+      "source": "mcp-apps",
+      "ts": 1767225602000,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 2,
+      "payload": {
+        "app": {
+          "id": "grafana",
+          "title": "Grafana billing",
+          "src": "https://grafana.internal/d/billing",
+          "sandbox": "sandboxed",
+          "height": 320,
+          "bridgeVersion": "0.2",
+          "transport": "postmessage",
+          "untrusted": true
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "kind": "tool.started",
+      "source": "mcp-apps",
+      "ts": 1767225602600,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_2",
+        "toolName": "estimate_remediation"
+      }
+    },
+    {
+      "seq": 11,
+      "kind": "tool.args.delta",
+      "source": "mcp-apps",
+      "ts": 1767225602640,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_2",
+        "delta": "{\"incident\":\"INC-77\"}"
+      }
+    },
+    {
+      "seq": 12,
+      "kind": "tool.args.done",
+      "source": "mcp-apps",
+      "ts": 1767225602660,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_2",
+        "args": {
+          "incident": "INC-77"
+        },
+        "parseError": "trailing characters after JSON"
+      }
+    },
+    {
+      "seq": 13,
+      "kind": "tool.result",
+      "source": "mcp-apps",
+      "ts": 1767225603200,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_2",
+        "messageId": "tm2",
+        "content": "{\"actions\":[\"roll_back_pg\",\"scale_out\"],\"costUsd\":6400}",
+        "durationMs": 540
+      }
+    },
+    {
+      "seq": 14,
+      "kind": "surface.data",
+      "source": "mcp-apps",
+      "ts": 1767225603400,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 3,
+      "payload": {
+        "surfaceId": "s_ops",
+        "path": "/incident/mitigationCostUsd",
+        "value": 6400,
+        "mode": "set"
+      }
+    },
+    {
+      "seq": 15,
+      "kind": "text.delta",
+      "source": "mcp-apps",
+      "ts": 1767225604200,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 4,
+      "payload": {
+        "messageId": "m2",
+        "delta": "이 장애의 완화 비용은 $6,400 으로 추정됩니다. "
+      }
+    },
+    {
+      "seq": 16,
+      "kind": "text.delta",
+      "source": "mcp-apps",
+      "ts": 1767225604400,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 4,
+      "payload": {
+        "messageId": "m2",
+        "delta": "$500 초과이므로 승인 없이 진행할 수 없습니다."
+      }
+    },
+    {
+      "seq": 17,
+      "kind": "text.done",
+      "source": "mcp-apps",
+      "ts": 1767225604600,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 4,
+      "payload": {
+        "messageId": "m2",
+        "text": "이 장애의 완화 비용은 $6,400 으로 추정됩니다. $500 초과이므로 승인 없이 진행할 수 없습니다."
+      }
+    },
+    {
+      "seq": 18,
+      "kind": "interrupt",
+      "source": "mcp-apps",
+      "ts": 1767225604800,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 4,
+      "payload": {
+        "reason": "remediation above $500 requires human approval",
+        "resumeToken": "rt_9f2",
+        "resumable": true
+      }
+    },
+    {
+      "seq": 19,
+      "kind": "run.finished",
+      "source": "mcp-apps",
+      "ts": 1767225612000,
+      "threadId": "thread_ops_3",
+      "runId": "run_escalation_003",
+      "step": 4,
+      "payload": {
+        "outcome": "interrupt",
+        "usage": {
+          "inputTokens": 210000,
+          "outputTokens": 60000,
+          "reasoningTokens": 18000
+        }
+      }
+    }
+  ]
+}

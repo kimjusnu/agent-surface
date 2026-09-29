@@ -10,3 +10,5 @@ coverage/
 data/
 *.sqlite
 *.sqlite3
+.tmp/
+*.tsbuildinfo.tmp

@@ -1,0 +1,6 @@
+name: dup-a
+cases:
+  - id: shared/id
+    subject: 'a-*'
+    assertions:
+      - type: no-errors

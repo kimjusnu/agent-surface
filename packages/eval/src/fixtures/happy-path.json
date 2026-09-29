@@ -1,0 +1,392 @@
+{
+  "runId": "run_happy_001",
+  "threadId": "thread_checkout_42",
+  "protocol": "a2ui",
+  "scenario": "checkout-flow",
+  "frames": [
+    {
+      "seq": 0,
+      "kind": "run.started",
+      "source": "a2ui",
+      "ts": 1767225600000,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 0,
+      "payload": {
+        "agentName": "commerce-surface",
+        "capabilities": {
+          "streaming": true,
+          "bidirectionalState": true
+        },
+        "input": {
+          "userId": "u_8812",
+          "locale": "ko-KR"
+        }
+      }
+    },
+    {
+      "seq": 1,
+      "kind": "text.delta",
+      "source": "a2ui",
+      "ts": 1767225600180,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "delta": "주문내역"
+      }
+    },
+    {
+      "seq": 2,
+      "kind": "text.delta",
+      "source": "a2ui",
+      "ts": 1767225600240,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "delta": "을 확인했습니다. "
+      }
+    },
+    {
+      "seq": 3,
+      "kind": "text.delta",
+      "source": "a2ui",
+      "ts": 1767225600300,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "delta": "배송지를 계산할게요."
+      }
+    },
+    {
+      "seq": 4,
+      "kind": "text.done",
+      "source": "a2ui",
+      "ts": 1767225600360,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 0,
+      "payload": {
+        "messageId": "m1",
+        "text": "주문내역을 확인했습니다. 배송지를 계산할게요."
+      }
+    },
+    {
+      "seq": 5,
+      "kind": "tool.started",
+      "source": "a2ui",
+      "ts": 1767225600420,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "toolName": "search_catalog",
+        "parentMessageId": "m1"
+      }
+    },
+    {
+      "seq": 6,
+      "kind": "tool.args.delta",
+      "source": "a2ui",
+      "ts": 1767225600430,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "delta": "{\"sku\":"
+      }
+    },
+    {
+      "seq": 7,
+      "kind": "tool.args.delta",
+      "source": "a2ui",
+      "ts": 1767225600450,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "delta": "\"A-9912\",\"limit\":3}"
+      }
+    },
+    {
+      "seq": 8,
+      "kind": "tool.args.done",
+      "source": "a2ui",
+      "ts": 1767225600470,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "args": {
+          "sku": "A-9912",
+          "limit": 3
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "kind": "tool.result",
+      "source": "a2ui",
+      "ts": 1767225600690,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 1,
+      "payload": {
+        "toolCallId": "call_1",
+        "messageId": "tool_msg_1",
+        "content": "[{\"id\":\"A-9912\",\"name\":\"Aurora Mug\",\"price\":24.5}]",
+        "durationMs": 220
+      }
+    },
+    {
+      "seq": 10,
+      "kind": "surface.created",
+      "source": "a2ui",
+      "ts": 1767225600760,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 2,
+      "payload": {
+        "surfaceId": "s_checkout",
+        "catalogId": "commerce.v1",
+        "title": "주문 요약",
+        "sendDataModel": true,
+        "data": {
+          "order": {
+            "id": "ord_4417",
+            "total": 24.5,
+            "currency": "USD"
+          },
+          "items": [
+            {
+              "sku": "A-9912",
+              "qty": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "kind": "surface.nodes",
+      "source": "a2ui",
+      "ts": 1767225600880,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 2,
+      "payload": {
+        "surfaceId": "s_checkout",
+        "mode": "replace",
+        "nodes": [
+          {
+            "component": "Card",
+            "id": "card_root",
+            "props": {
+              "title": {
+                "kind": "template",
+                "template": "주문 {{ /order/id }}"
+              },
+              "tone": {
+                "kind": "literal",
+                "value": "neutral"
+              }
+            },
+            "children": [
+              {
+                "component": "Text",
+                "id": "txt_total",
+                "props": {
+                  "value": {
+                    "kind": "data",
+                    "ref": {
+                      "pointer": "/order/total"
+                    }
+                  }
+                }
+              },
+              {
+                "component": "Text",
+                "id": "txt_currency",
+                "props": {
+                  "value": {
+                    "kind": "data",
+                    "ref": {
+                      "pointer": "/order/currency"
+                    }
+                  }
+                }
+              },
+              {
+                "component": "Button",
+                "id": "btn_pay",
+                "props": {
+                  "label": {
+                    "kind": "literal",
+                    "value": "결제하기"
+                  },
+                  "action": {
+                    "kind": "literal",
+                    "value": "onClick"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "component": "Text",
+            "id": "txt_hint",
+            "props": {
+              "value": {
+                "kind": "literal",
+                "value": "배송비는 결제 후 계산됩니다."
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "seq": 12,
+      "kind": "surface.data",
+      "source": "a2ui",
+      "ts": 1767225600900,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 2,
+      "payload": {
+        "surfaceId": "s_checkout",
+        "path": "/order/shippingFee",
+        "value": 3.5,
+        "mode": "set"
+      }
+    },
+    {
+      "seq": 13,
+      "kind": "tool.started",
+      "source": "a2ui",
+      "ts": 1767225600980,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_2",
+        "toolName": "quote_shipping",
+        "parentMessageId": "m1"
+      }
+    },
+    {
+      "seq": 14,
+      "kind": "tool.args.done",
+      "source": "a2ui",
+      "ts": 1767225601000,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_2",
+        "args": {
+          "zip": "21312",
+          "weightKg": 0.6
+        }
+      }
+    },
+    {
+      "seq": 15,
+      "kind": "tool.result",
+      "source": "a2ui",
+      "ts": 1767225601240,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 3,
+      "payload": {
+        "toolCallId": "call_2",
+        "messageId": "tool_msg_2",
+        "content": "{\"carrier\":\"CJ\",\"etaDays\":2,\"fee\":3.5}",
+        "durationMs": 240
+      }
+    },
+    {
+      "seq": 16,
+      "kind": "action.dispatched",
+      "source": "a2ui",
+      "ts": 1767225601320,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 4,
+      "payload": {
+        "surfaceId": "s_checkout",
+        "componentId": "btn_pay",
+        "name": "onClick",
+        "context": {
+          "total": 28.0
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "kind": "text.delta",
+      "source": "a2ui",
+      "ts": 1767225601500,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 4,
+      "payload": {
+        "messageId": "m2",
+        "delta": "결제가 접수되었습니다. "
+      }
+    },
+    {
+      "seq": 18,
+      "kind": "text.delta",
+      "source": "a2ui",
+      "ts": 1767225601600,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 4,
+      "payload": {
+        "messageId": "m2",
+        "delta": "예상 배송은 2일입니다."
+      }
+    },
+    {
+      "seq": 19,
+      "kind": "text.done",
+      "source": "a2ui",
+      "ts": 1767225601700,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 4,
+      "payload": {
+        "messageId": "m2",
+        "text": "결제가 접수되었습니다. 예상 배송은 2일입니다."
+      }
+    },
+    {
+      "seq": 20,
+      "kind": "run.finished",
+      "source": "a2ui",
+      "ts": 1767225602600,
+      "threadId": "thread_checkout_42",
+      "runId": "run_happy_001",
+      "step": 4,
+      "payload": {
+        "outcome": "success",
+        "usage": {
+          "inputTokens": 4200,
+          "outputTokens": 900,
+          "cachedInputTokens": 1200,
+          "costUsd": 0.0261
+        }
+      }
+    }
+  ]
+}

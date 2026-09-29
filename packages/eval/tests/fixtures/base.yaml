@@ -1,0 +1,12 @@
+name: base
+version: 1
+description: Base cases used by the composition tests.
+cases:
+  - id: base/alpha
+    subject: 'a-*'
+    assertions:
+      - type: no-errors
+  - id: base/beta
+    subject: 'b-*'
+    assertions:
+      - type: no-errors

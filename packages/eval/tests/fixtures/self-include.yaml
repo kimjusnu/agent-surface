@@ -1,0 +1,7 @@
+name: self-include
+include: self-include.yaml
+cases:
+  - id: self/x
+    subject: '*'
+    assertions:
+      - type: no-errors

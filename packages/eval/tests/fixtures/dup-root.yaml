@@ -1,0 +1,7 @@
+name: dup-root
+include: dup-a.yaml
+cases:
+  - id: shared/id
+    subject: 'c-*'
+    assertions:
+      - type: no-errors

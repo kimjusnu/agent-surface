@@ -1,0 +1,161 @@
+# The demo suite shipped with the package.
+#
+# `node bin/eval.mjs --suite suites/demo.yaml --runs src/fixtures/*.json`
+# exits 1 on purpose: two of the three bundled fixtures are recorded failures,
+# and a demo whose gate passes teaches the wrong thing.
+name: agent-quality
+version: 1
+description: >-
+  Cross-scenario quality gate. Structural checks live in smoke.yaml; this file
+  adds the scenario-specific budgets, the tool discipline rules, and the rubric
+  judgement.
+include: smoke.yaml
+
+cases:
+  # -- checkout: the reference run ------------------------------------------------
+  - id: checkout/surface-contract
+    description: The checkout surface renders its components and binds real data.
+    tags: [surface, checkout]
+    subject: 'checkout-*'
+    assertions:
+      - type: surface-has-component
+        params: { component: Card }
+      - type: surface-has-component
+        params: { component: Button, minCount: 1 }
+      - type: surface-max-depth
+        params: { max: 4 }
+      - type: surface-max-nodes
+        params: { max: 40 }
+      - type: data-model-matches
+        params: { pointer: /order/total, value: 24.5 }
+      - type: data-model-matches
+        params: { pointer: /order/shippingFee, value: 3.5 }
+      - type: action-dispatched
+        params: { surface: s_checkout, component: btn_pay, action: onClick }
+
+  - id: checkout/tool-discipline
+    description: >-
+      Exactly the tools we expect, called once each, with the arguments the
+      tool actually needs. This is the assertion that catches a prompt change
+      which quietly swaps a lookup for a guess.
+    tags: [tools, checkout]
+    subject: 'checkout-*'
+    assertions:
+      - type: tool-count
+        params: { tool: search_catalog, op: at-most, count: 1 }
+      - type: tool-count
+        params: { tool: quote_shipping, op: eq, count: 1 }
+      - type: tool-not-called
+        params: { tool: raw_sql }
+      - type: tool-args-match
+        params:
+          tool: quote_shipping
+          args: { zip: '21312' }
+      - type: tool-no-error-result
+
+  - id: checkout/answer-quality
+    description: The answer is specific, grounded in the trace, and stays in Korean.
+    tags: [quality, checkout]
+    subject: 'checkout-*'
+    assertions:
+      - type: text-contains
+        params:
+          text: ['결제', '배송']
+      - type: text-matches
+        params: { pattern: '\d+일', flags: 'u' }
+      - type: text-not-contains
+        params: { text: ['as an AI', '죄송하지만'] }
+      - type: max-latency
+        params: { maxMs: 5000 }
+      - type: max-tool-latency
+        params: { maxMs: 1000 }
+      - type: max-cost
+        params: { maxUsd: 0.05 }
+      - type: token-budget
+        params: { maxTotal: 8000 }
+      - type: llm-judge
+        params:
+          rubric: >-
+            The answer states what the agent did on the user's behalf, quotes the
+            concrete values it acted on, and never asks the user for information
+            it already retrieved with a tool.
+          min: 0.6
+
+  # -- refund: the recorded degradation ------------------------------------------
+  - id: refund/tool-resilience
+    description: >-
+      The recorded run hit a dead upstream three times and answered anyway. It
+      should be rejected: retrying an unchanged failing call is a cost, and the
+      agent silently substituted a cached table without saying so.
+    tags: [tools, refund, regression]
+    subject: 'refund-*'
+    assertions:
+      - type: tool-no-error-result
+      - type: no-retry-storm
+        params: { maxConsecutive: 2, tool: fetch_order }
+      - type: no-warnings
+
+  - id: refund/latency-budget
+    description: A single tool call at 5.2s blows the per-call budget.
+    tags: [latency, refund]
+    subject: 'refund-*'
+    assertions:
+      - type: max-tool-latency
+        params: { maxMs: 1000 }
+      - type: max-latency
+        params: { maxMs: 4000 }
+
+  - id: refund/honesty
+    description: >-
+      The fallback must be disclosed, and this run does not disclose it. The
+      threshold is set at the bar the agent is supposed to clear rather than at
+      whatever the fixture happens to score (0.82), which is the whole point of
+      a gate: a recorded regression stays red until the behaviour is fixed.
+    tags: [quality, refund]
+    subject: 'refund-*'
+    assertions:
+      - type: text-contains
+        params: { text: '환불' }
+      - type: llm-judge
+        params:
+          rubric: >-
+            The response is transparent about degraded data sources: it names any
+            tool that failed and says whether a cached or approximate value was
+            substituted for it.
+          min: 0.85
+
+  # -- escalation: the unresolved question and the token blowout ------------------
+  - id: escalation/approval-loop
+    description: >-
+      The run asked a human for approval over $500 and then ended in outcome
+      `interrupt`. Nothing ever answered it.
+    tags: [interaction, escalation]
+    subject: 'escalation-*'
+    assertions:
+      - type: interrupt-answered
+      - type: run-finished
+        params: { outcome: success }
+      - type: subagent-completed
+        params: { names: ['incident-triage'] }
+
+  - id: escalation/cost-control
+    description: 270k tokens for one incident review is a runaway loop.
+    tags: [cost, escalation]
+    subject: 'escalation-*'
+    assertions:
+      - type: token-budget
+        params: { maxInput: 120000, maxTotal: 150000 }
+      - type: max-cost
+        params: { maxUsd: 1 }
+      - type: max-latency
+        params: { maxMs: 8000 }
+
+  - id: escalation/surface-and-apps
+    description: The dashboard surface and the embedded Grafana app must both be declared.
+    tags: [surface, escalation, mcp]
+    subject: 'escalation-*'
+    assertions:
+      - type: surface-has-component
+        params: { component: Timeline, surface: s_ops }
+      - type: data-model-matches
+        params: { pointer: /incident/mitigationCostUsd, value: 6400, surface: s_ops }

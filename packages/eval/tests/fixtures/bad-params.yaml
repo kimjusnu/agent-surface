@@ -1,0 +1,17 @@
+name: bad-params
+cases:
+  - id: bad/one
+    subject: '*'
+    assertions:
+      - type: max-latency
+        params:
+          maxMs: 'not-a-number'
+  - id: bad/two
+    subject: '*'
+    assertions:
+      - type: no-such-asserter
+      - type: tool-count
+        params:
+          tool: search
+          op: sideways
+          count: 2

@@ -1,0 +1,34 @@
+# Structural checks that should hold for any run that reaches a surface.
+# Included by demo.yaml; kept separate so a new scenario suite can pull just
+# this file instead of inheriting every quality threshold in the demo.
+name: smoke
+version: 3
+description: >-
+  Baseline structural and safety checks. Every scenario in this repository is
+  expected to pass these; they are the assertions that catch a protocol
+  regression rather than a product regression.
+
+cases:
+  - id: smoke/clean-run
+    description: A well-formed run produced no input problems and finished.
+    tags: [baseline, protocol]
+    subject: '*'
+    assertions:
+      - type: no-input-errors
+      - type: run-finished
+
+  - id: smoke/no-fatal-errors
+    description: The agent never emitted a fatal error frame.
+    tags: [baseline, safety]
+    subject: '*'
+    assertions:
+      - type: no-errors
+        params:
+          level: fatal
+
+  - id: smoke/interrupts-closed
+    description: Any question the agent asked was answered before the run ended.
+    tags: [baseline, interaction]
+    subject: '*'
+    assertions:
+      - type: interrupt-answered

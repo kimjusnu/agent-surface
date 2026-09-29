@@ -1,0 +1,7 @@
+name: splice
+cases:
+  - id: splice/alpha
+    subject: 'a-*'
+    assertions:
+      - type: no-errors
+  - include: base.yaml
